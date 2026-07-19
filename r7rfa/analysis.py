@@ -1,5 +1,5 @@
 """
-Core scientific analysis routines for Rugby7 Referee Fatigue Analyzer.
+Core scientific analysis routines.
 """
 
 import numpy as np
