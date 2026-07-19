@@ -90,7 +90,7 @@ def buscar_excel_principal(datos):
             print(f"- {p.name}")
         sys.exit(1)
 
-    print(f"Excel principal detectado: {elegido.name}")
+    log_debug(f"Excel principal detectado: {elegido.name}")
     return elegido
 
 def buscar_plantilla(datos):
@@ -98,7 +98,7 @@ def buscar_plantilla(datos):
     if not docs:
         print("ERROR: no se encontró plantilla.docx en Datos.")
         sys.exit(1)
-    print(f"Plantilla detectada: {docs[0].name}")
+    log_debug(f"Plantilla detectada: {docs[0].name}")
     return docs[0]
 
 def buscar_excel_datos_arbitros(datos):
@@ -125,7 +125,7 @@ def leer_excel(path, sheet_name=None):
     if df.empty:
         print(f"ERROR: {path.name} / hoja {sheet_name} está vacío.")
         sys.exit(1)
-    print(f"Hoja de datos utilizada: {sheet_name}")
+    log_debug(f"Hoja de datos utilizada: {sheet_name}")
     return df
 
 def leer_hoja_opcional(path, nombres):
@@ -139,9 +139,8 @@ def leer_hoja_opcional(path, nombres):
                 df = df.dropna(how="all").copy()
                 df.columns = [limpiar_texto(c) for c in df.columns]
                 if not df.empty:
-                    print(f"Hoja auxiliar utilizada: {mapa[hn]}")
+                    log_debug(f"Hoja auxiliar utilizada: {mapa[hn]}")
                     return df
     except Exception:
         pass
     return None
-
