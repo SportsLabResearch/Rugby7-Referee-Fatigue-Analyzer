@@ -1,0 +1,12 @@
+﻿cff-version: 1.2.0
+message: "If you use this software, please cite it as follows."
+title: "Rugby7 Referee Fatigue Analyzer"
+type: software
+version: "1.0.1"
+doi: "10.5281/zenodo.21443419"
+date-released: "2026-07-19"
+repository-code: "https://github.com/SportsLabResearch/Rugby7-Referee-Fatigue-Analyzer"
+url: "https://doi.org/10.5281/zenodo.21443419"
+authors:
+  - family-names: "Pino-Ortega"
+    given-names: "Pedro"
