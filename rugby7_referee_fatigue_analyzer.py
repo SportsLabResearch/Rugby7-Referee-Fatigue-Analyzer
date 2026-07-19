@@ -1,28 +1,28 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 SCRIPT DE INFORME AUTOMÃTICO PARA ÃRBITROS DE RUGBY 7
 V30 - informe profesional Q1 + foto robusta + dificultad competitiva + heatmap
 
 Estructura esperada:
     Carpeta_del_script/
-    â”œâ”€â”€ script_informe_arbitro_rugby7_V16_PLANTILLA_TABLA_FOTO_PARTIDOS.py
-    â””â”€â”€ Datos/
-        â”œâ”€â”€ cuestionarios.xlsx
-        â”œâ”€â”€ plantilla.docx
-        â”œâ”€â”€ datos_arbitros.xlsx
-        â”œâ”€â”€ Raul.jpg / fotos/Raul.png / imagenes/Raul.jpeg
-        â””â”€â”€ ...
+    ├── script_informe_arbitro_rugby7_V16_PLANTILLA_TABLA_FOTO_PARTIDOS.py
+    └── Datos/
+        ├── cuestionarios.xlsx
+        ├── plantilla.docx
+        ├── datos_arbitros.xlsx
+        ├── Raul.jpg / fotos/Raul.png / imagenes/Raul.jpeg
+        └── ...
 
 Correcciones principales:
-1. NO crea una tabla nueva para los datos del Ã¡rbitro si la plantilla ya tiene la tabla Variable / Valor / Foto.
+1. NO crea una tabla nueva para los datos del árbitro si la plantilla ya tiene la tabla Variable / Valor / Foto.
 2. Rellena la columna "Valor" de esa tabla usando datos_arbitros.xlsx.
 3. Inserta la foto en la celda grande donde aparece "Foto".
-4. Si se selecciona anÃ¡lisis por partidos:
-   - Genera un grÃ¡fico independiente por cada variable.
-   - Cada grÃ¡fico muestra todos los partidos seleccionados.
+4. Si se selecciona análisis por partidos:
+   - Genera un gráfico independiente por cada variable.
+   - Cada gráfico muestra todos los partidos seleccionados.
    - Cada punto es el valor directo del partido, no media.
    - No calcula SD/min/max por partido porque n=1.
-5. AÃ±ade el anÃ¡lisis debajo de la ficha inicial de la plantilla.
+5. Añade el análisis debajo de la ficha inicial de la plantilla.
 """
 
 import re
@@ -57,9 +57,9 @@ except Exception:
 
 
 VARIABLES_OBJETIVO = {
-    "RPE": ["rpe", "percepcion", "percepciÃ³n", "rendimiento", "esfuerzo"],
+    "RPE": ["rpe", "percepcion", "percepción", "rendimiento", "esfuerzo"],
     "Molestias (MS)": ["molestia", "molestias", "ms"],
-    "Capacidad fÃ­sica (PF)": ["capacidad fisica", "capacidad fÃ­sica", "pf"],
+    "Capacidad física (PF)": ["capacidad fisica", "capacidad física", "pf"],
     "Capacidad mental (MF)": ["capacidad mental", "mf"],
     "Confianza (RC)": ["confianza", "rc"],
 }
@@ -69,40 +69,40 @@ EXTENSIONES_IMAGEN = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
 COLOR_TITULO = RGBColor(31, 78, 121)
 
 # =============================================================================
-# V31: sin numeraciÃ³n en epÃ­grafes, hallazgos en viÃ±etas y tendencia+ecuaciÃ³n en todas las grÃ¡ficas.
+# V31: sin numeración en epígrafes, hallazgos en viñetas y tendencia+ecuación en todas las gráficas.
 # =============================================================================
 
 # =============================================================================
-# IDIOMA / TRADUCCIÃ“N INTERNA DEL INFORME
+# IDIOMA / TRADUCCIÓN INTERNA DEL INFORME
 # =============================================================================
 
 TEXTOS = {
     "castellano": {
         "sin_datos": "Sin datos.",
-        "informe": "Informe de anÃ¡lisis",
+        "informe": "Informe de análisis",
         "observaciones": "Observaciones analizadas",
-        "tipo_analisis_incluido": "Tipo de anÃ¡lisis incluido",
+        "tipo_analisis_incluido": "Tipo de análisis incluido",
         "indices_incluidos": "Ãndices de fatiga incluidos",
         "filtros": "Filtros aplicados",
-        "partidos": "AnÃ¡lisis por partidos",
-        "partidos_intro": "Este anÃ¡lisis presenta valores directos de cada partido. No se calculan desviaciones estÃ¡ndar por partido porque cada partido tiene un Ãºnico registro.",
-        "genero": "AnÃ¡lisis por gÃ©nero",
-        "competitiva": "AnÃ¡lisis por categorÃ­a competitiva",
-        "graficos": "GrÃ¡ficos e interpretaciÃ³n",
-        "interpretacion": "InterpretaciÃ³n",
-        "conclusion": "ConclusiÃ³n",
-        "conclusion_partidos": "El anÃ¡lisis por partidos permite revisar la evoluciÃ³n real del Ã¡rbitro partido a partido. Cada grÃ¡fico representa una variable concreta en todos los partidos seleccionados.",
-        "conclusion_genero": "El anÃ¡lisis por gÃ©nero resume las diferencias agrupadas por M/W cuando existen datos suficientes.",
-        "conclusion_competitiva": "El anÃ¡lisis por categorÃ­a competitiva resume la respuesta del Ã¡rbitro segÃºn el equilibrio del partido.",
-        "variables": "DescripciÃ³n de variables analizadas",
-        "variables_intro": "La siguiente tabla resume las siglas empleadas en el informe, su significado y una interpretaciÃ³n breve apoyada en literatura cientÃ­fica sobre monitorizaciÃ³n subjetiva, carga interna y rendimiento.",
-        "referencias": "Referencias cientÃ­ficas",
-        "puntuacion_directa": "PuntuaciÃ³n directa (0-10)",
+        "partidos": "Análisis por partidos",
+        "partidos_intro": "Este análisis presenta valores directos de cada partido. No se calculan desviaciones estándar por partido porque cada partido tiene un único registro.",
+        "genero": "Análisis por género",
+        "competitiva": "Análisis por categoría competitiva",
+        "graficos": "Gráficos e interpretación",
+        "interpretacion": "Interpretación",
+        "conclusion": "Conclusión",
+        "conclusion_partidos": "El análisis por partidos permite revisar la evolución real del árbitro partido a partido. Cada gráfico representa una variable concreta en todos los partidos seleccionados.",
+        "conclusion_genero": "El análisis por género resume las diferencias agrupadas por M/W cuando existen datos suficientes.",
+        "conclusion_competitiva": "El análisis por categoría competitiva resume la respuesta del árbitro según el equilibrio del partido.",
+        "variables": "Descripción de variables analizadas",
+        "variables_intro": "La siguiente tabla resume las siglas empleadas en el informe, su significado y una interpretación breve apoyada en literatura científica sobre monitorización subjetiva, carga interna y rendimiento.",
+        "referencias": "Referencias científicas",
+        "puntuacion_directa": "Puntuación directa (0-10)",
         "media_010": "Media (0-10)",
         "por_partido": "por partido",
         "por_partidos": "por partidos",
-        "por_genero": "por gÃ©nero",
-        "por_competitiva": "por categorÃ­a competitiva",
+        "por_genero": "por género",
+        "por_competitiva": "por categoría competitiva",
     },
     "ingles": {
         "sin_datos": "No data.",
@@ -136,18 +136,18 @@ TEXTOS = {
 TRAD_EN = {
     "RPE": "RPE",
     "Molestias (MS)": "Muscle soreness (MS)",
-    "Capacidad fÃ­sica (PF)": "Physical fitness (PF)",
+    "Capacidad física (PF)": "Physical fitness (PF)",
     "Capacidad mental (MF)": "Mental fitness (MF)",
     "Confianza (RC)": "Referee confidence (RC)",
     "IGFA simple": "Simple GRFI",
     "IGFA ponderado": "Weighted GRFI",
-    "ClasificaciÃ³n IGFA simple": "Simple GRFI classification",
-    "ClasificaciÃ³n IGFA ponderado": "Weighted GRFI classification",
+    "Clasificación IGFA simple": "Simple GRFI classification",
+    "Clasificación IGFA ponderado": "Weighted GRFI classification",
     "Partido": "Match",
-    "GÃ©nero": "Sex",
-    "CategorÃ­a competitiva": "Competitive balance category",
-    "Resumen por gÃ©nero": "Summary by sex",
-    "Resumen por categorÃ­a competitiva": "Summary by competitive balance category",
+    "Género": "Sex",
+    "Categoría competitiva": "Competitive balance category",
+    "Resumen por género": "Summary by sex",
+    "Resumen por categoría competitiva": "Summary by competitive balance category",
     "Fatiga muy baja": "Very low fatigue",
     "Fatiga baja": "Low fatigue",
     "Fatiga moderada": "Moderate fatigue",
@@ -159,7 +159,7 @@ TRAD_EN = {
     "Todas/no aplica": "All/not applicable",
     "Todos": "All",
     "Todas": "All",
-    "Tipo de anÃ¡lisis": "Type of analysis",
+    "Tipo de análisis": "Type of analysis",
     "Ãndices incluidos": "Included indices",
     "Plantilla": "Template",
     "partidos": "matches",
@@ -201,7 +201,7 @@ def etiqueta_idioma(etiqueta, idioma="castellano"):
 
 
 # =============================================================================
-# TEXTO Y DETECCIÃ“N
+# TEXTO Y DETECCIÓN
 # =============================================================================
 
 def limpiar_texto(x):
@@ -260,18 +260,51 @@ def detectar_columna(df, candidatos, posicion=None):
     return None
 
 
+DEBUG = False
+
+
+def log_debug(mensaje):
+    if DEBUG:
+        print(mensaje)
+
+
 def seleccionar_modo_ejecucion():
+    print("=" * 64)
+    print("RUGBY7 REFEREE FATIGUE ANALYZER")
+    print("SportsLabResearch")
+    print("=" * 64)
+
     print("\nMODO DE EJECUCIÓN")
-    print("1. Privado/local")
-    print("2. Público/anonimizado")
+    print("\n1. Modo de investigación")
+    print("   Utiliza la base de datos privada local.")
+    print("\n2. Modo de demostración")
+    print("   Utiliza la base de datos pública anonimizada.")
 
     while True:
-        op = input("Selecciona modo: ").strip()
+        op = input("\nSelección: ").strip()
         if op == "1":
             return "privado"
         if op == "2":
             return "publico"
-        print("Opción no válida.")
+        print("Selección no válida. Elige 1 o 2.")
+
+
+def seleccionar_nivel_salida():
+    global DEBUG
+
+    print("\nMODO DE SALIDA")
+    print("1. Normal")
+    print("2. Detallado / depuración")
+
+    while True:
+        op = input("Selección: ").strip()
+        if op == "1":
+            DEBUG = False
+            return
+        if op == "2":
+            DEBUG = True
+            return
+        print("Selección no válida. Elige 1 o 2.")
 
 
 def carpeta_datos(modo="privado"):
@@ -288,7 +321,7 @@ def carpeta_datos(modo="privado"):
 
 
 def seleccionar_hoja_datos(path, solo_nombre=False):
-    """Selecciona la hoja de datos principal dentro de un Excel Ãºnico."""
+    """Selecciona la hoja de datos principal dentro de un Excel único."""
     xls = pd.ExcelFile(path)
     preferidas = [
         "partidos_cuestionarios",
@@ -311,7 +344,7 @@ def seleccionar_hoja_datos(path, solo_nombre=False):
 
 def buscar_excel_principal(datos):
     """
-    Busca automÃ¡ticamente el Excel de datos dentro de la carpeta Datos sin depender del nombre.
+    Busca automáticamente el Excel de datos dentro de la carpeta Datos sin depender del nombre.
     No excluye archivos por contener palabras como datos_arbitros.
     Si hay varios Excel, prioriza el que contenga columnas/hojas compatibles con la base de partidos-cuestionarios.
     """
@@ -321,7 +354,7 @@ def buscar_excel_principal(datos):
     excels = [p for p in excels if not p.name.startswith("~$")]
 
     if not excels:
-        print("ERROR: no se encontrÃ³ ningÃºn archivo Excel en la carpeta Datos.")
+        print("ERROR: no se encontró ningún archivo Excel en la carpeta Datos.")
         sys.exit(1)
 
     def puntuar_excel(path):
@@ -344,7 +377,7 @@ def buscar_excel_principal(datos):
                 for k in claves:
                     if k in c or c in k:
                         score += 3
-            # Evita elegir Excel claramente vacÃ­os o diccionarios si hay otro mejor.
+            # Evita elegir Excel claramente vacíos o diccionarios si hay otro mejor.
             score += min(len(cols), 30) / 10
         except Exception:
             score = -1
@@ -359,16 +392,16 @@ def buscar_excel_principal(datos):
             print(f"- {p.name}")
         sys.exit(1)
 
-    print(f"Excel principal detectado: {elegido.name}")
+    log_debug(f"Excel principal detectado: {elegido.name}")
     return elegido
 
 
 def buscar_plantilla(datos):
     docs = [p for p in datos.glob("*.docx") if "plantilla" in normalizar(p.stem) and not p.name.startswith("~$")]
     if not docs:
-        print("ERROR: no se encontrÃ³ plantilla.docx en Datos.")
+        print("ERROR: no se encontró plantilla.docx en Datos.")
         sys.exit(1)
-    print(f"Plantilla detectada: {docs[0].name}")
+    log_debug(f"Plantilla detectada: {docs[0].name}")
     return docs[0]
 
 
@@ -382,9 +415,9 @@ def buscar_excel_datos_arbitros(datos):
         and ("datos_arbitro" in normalizar(p.stem) or "datos_arbitros" in normalizar(p.stem))
     ]
     if not docs:
-        print("AVISO: no se encontrÃ³ datos_arbitros.xlsx.")
+        print("AVISO: no se encontró datos_arbitros.xlsx.")
         return None
-    print(f"Datos de Ã¡rbitros detectado: {docs[0].name}")
+    print(f"Datos de árbitros detectado: {docs[0].name}")
     return docs[0]
 
 
@@ -395,9 +428,9 @@ def leer_excel(path, sheet_name=None):
     df = df.dropna(how="all").copy()
     df.columns = [limpiar_texto(c) for c in df.columns]
     if df.empty:
-        print(f"ERROR: {path.name} / hoja {sheet_name} estÃ¡ vacÃ­o.")
+        print(f"ERROR: {path.name} / hoja {sheet_name} está vacío.")
         sys.exit(1)
-    print(f"Hoja de datos utilizada: {sheet_name}")
+    log_debug(f"Hoja de datos utilizada: {sheet_name}")
     return df
 
 
@@ -412,7 +445,7 @@ def leer_hoja_opcional(path, nombres):
                 df = df.dropna(how="all").copy()
                 df.columns = [limpiar_texto(c) for c in df.columns]
                 if not df.empty:
-                    print(f"Hoja auxiliar utilizada: {mapa[hn]}")
+                    log_debug(f"Hoja auxiliar utilizada: {mapa[hn]}")
                     return df
     except Exception:
         pass
@@ -438,18 +471,18 @@ def es_columna_competitiva(df, col):
 
 def detectar_columnas(df):
     """
-    DetecciÃ³n adaptada a la base Ãºnica.
-    Usa la columna especÃ­fica categoria_competitiva si existe.
-    El anÃ¡lisis por gÃ©nero queda eliminado.
+    Detección adaptada a la base única.
+    Usa la columna específica categoria_competitiva si existe.
+    El análisis por género queda eliminado.
     """
-    col_arbitro = detectar_columna(df, ["ref_id", "referee_name", "arbitro", "Ã¡rbitro", "nombre", "referee"], posicion=0)
+    col_arbitro = detectar_columna(df, ["ref_id", "referee_name", "arbitro", "árbitro", "nombre", "referee"], posicion=0)
     col_partido = detectar_columna(df, ["match_id", "partido", "match", "game", "id_partido"], posicion=0)
-    col_cat = detectar_columna(df, ["categoria", "categorÃ­a", "nivel", "division", "divisiÃ³n", "category"], posicion=None)
+    col_cat = detectar_columna(df, ["categoria", "categoría", "nivel", "division", "división", "category"], posicion=None)
 
     col_comp = detectar_columna(df, [
         "categoria_competitiva",
-        "categorÃ­a_competitiva",
-        "categorÃ­a competitiva",
+        "categoría_competitiva",
+        "categoría competitiva",
         "dificultad_partido",
         "nivel_competitivo",
         "equilibrio competitivo",
@@ -457,22 +490,22 @@ def detectar_columnas(df):
     ], posicion=None)
 
     if col_comp is None:
-        col_comp = detectar_columna(df, ["competitiva", "indice competitivo", "Ã­ndice competitivo"], posicion=None)
+        col_comp = detectar_columna(df, ["competitiva", "indice competitivo", "índice competitivo"], posicion=None)
 
     if col_partido is None and len(df.columns) >= 1:
         col_partido = df.columns[0]
 
     print("\nCOLUMNAS DETECTADAS")
     print(f"- Ãrbitro: {col_arbitro}")
-    print("- GÃ©nero: anÃ¡lisis eliminado")
+    print("- Género: análisis eliminado")
     print(f"- Partido: {col_partido if col_partido else 'No detectada'}")
-    print(f"- CategorÃ­a competitiva: {col_comp if col_comp else 'No detectada'}")
+    print(f"- Categoría competitiva: {col_comp if col_comp else 'No detectada'}")
 
     if col_arbitro is None:
-        print("ERROR: no se detectÃ³ la columna del Ã¡rbitro.")
+        print("ERROR: no se detectó la columna del árbitro.")
         sys.exit(1)
     if col_partido is None:
-        print("ERROR: no se detectÃ³ la columna de partido.")
+        print("ERROR: no se detectó la columna de partido.")
         sys.exit(1)
 
     return {"arbitro": col_arbitro, "genero": None, "partido": col_partido, "categoria": col_cat, "competitiva": col_comp}
@@ -487,7 +520,7 @@ def seleccionar(titulo, opciones, permitir_todos=True):
         print(f"{len(opciones)+1}. Todos/as")
 
     while True:
-        txt = input("Selecciona opciÃ³n/es (ej.: 1 | 1,3 | TODOS): ").strip()
+        txt = input("Selecciona opción/es (ej.: 1 | 1,3 | TODOS): ").strip()
         if permitir_todos and normalizar(txt) in ["todos", "todas", "all", str(len(opciones)+1)]:
             return opciones
         partes = [p.strip() for p in txt.split(",") if p.strip()]
@@ -507,14 +540,14 @@ def seleccionar(titulo, opciones, permitir_todos=True):
                 break
         if ok and idx:
             return [opciones[i] for i in idx]
-        print("SelecciÃ³n no vÃ¡lida.")
+        print("Selección no válida.")
 
 
 
 
 def seleccionar_idioma():
     print("\nIDIOMA DEL INFORME")
-    print("1. InglÃ©s")
+    print("1. Inglés")
     print("2. Castellano")
     print("3. Ambos")
 
@@ -526,7 +559,7 @@ def seleccionar_idioma():
             return ["castellano"]
         elif op == "3":
             return ["ingles", "castellano"]
-        print("OpciÃ³n no vÃ¡lida.")
+        print("Opción no válida.")
 
 
 def seleccionar_formato():
@@ -543,7 +576,7 @@ def seleccionar_formato():
             return ["pdf"]
         elif op == "3":
             return ["docx", "pdf"]
-        print("OpciÃ³n no vÃ¡lida.")
+        print("Opción no válida.")
 
 def seleccionar_tipo_analisis(disponibles):
     print("\nTIPO DE ANÃLISIS")
@@ -551,31 +584,31 @@ def seleccionar_tipo_analisis(disponibles):
     if disponibles.get("partidos"):
         ops.append(("partidos", "Por partidos"))
     if disponibles.get("competitiva"):
-        ops.append(("competitiva", "Por categorÃ­a competitiva"))
+        ops.append(("competitiva", "Por categoría competitiva"))
     ops.append(("todos", "Todos"))
 
     for i, (_, txt) in enumerate(ops, 1):
         print(f"{i}. {txt}")
 
     while True:
-        op = input("Selecciona tipo de anÃ¡lisis: ").strip()
+        op = input("Selecciona tipo de análisis: ").strip()
         if op.isdigit() and 1 <= int(op) <= len(ops):
             key = ops[int(op)-1][0]
             if key == "todos":
                 return {k for k, v in disponibles.items() if v and k != "genero"}
             return {key}
-        print("OpciÃ³n no vÃ¡lida.")
+        print("Opción no válida.")
 
 
 def seleccionar_indices():
     print("\nÃNDICES DE FATIGA A INCLUIR")
     print("1. IGFA simple: media de RPE, MS y variables positivas invertidas")
     print("2. IGFA ponderado: mayor peso para RPE y molestias")
-    print("3. Ambos Ã­ndices")
-    print("4. No incluir Ã­ndices")
+    print("3. Ambos índices")
+    print("4. No incluir índices")
 
     while True:
-        op = input("Selecciona Ã­ndice/s: ").strip()
+        op = input("Selecciona índice/s: ").strip()
         if op == "1":
             return {"IGFA simple"}
         elif op == "2":
@@ -584,7 +617,7 @@ def seleccionar_indices():
             return {"IGFA simple", "IGFA ponderado"}
         elif op == "4":
             return set()
-        print("OpciÃ³n no vÃ¡lida.")
+        print("Opción no válida.")
 
 
 def preparar_genero(df, col):
@@ -619,14 +652,14 @@ def detectar_variables(df):
         {"RPE": {"pre": col_pre, "post": col_post}, ...}
     """
     patrones_base = {
-        "RPE": ["rpe", "percepcion", "percepciÃ³n", "esfuerzo"],
+        "RPE": ["rpe", "percepcion", "percepción", "esfuerzo"],
         "Molestias (MS)": ["ms", "molestia", "molestias", "soreness", "dolor"],
-        "Capacidad fÃ­sica (PF)": ["pf", "capacidad fisica", "capacidad fÃ­sica", "physical fitness"],
+        "Capacidad física (PF)": ["pf", "capacidad fisica", "capacidad física", "physical fitness"],
         "Capacidad mental (MF)": ["mf", "capacidad mental", "mental fitness"],
         "Confianza (RC)": ["rc", "confianza", "confidence"],
     }
     pre_tokens = ["pre", "before", "antes", "previo", "pre_match", "prematch"]
-    post_tokens = ["post", "after", "despues", "despuÃ©s", "posterior", "post_match", "postmatch"]
+    post_tokens = ["post", "after", "despues", "después", "posterior", "post_match", "postmatch"]
 
     norm_cols = {c: normalizar(c) for c in df.columns}
     variables = {}
@@ -639,7 +672,7 @@ def detectar_variables(df):
     for etiqueta, patrones in patrones_base.items():
         pre = None
         post = None
-        # 1) Coincidencia explÃ­cita PRE/POST
+        # 1) Coincidencia explícita PRE/POST
         for c, nc in norm_cols.items():
             if pre is None and score_col(nc, patrones, pre_tokens):
                 if pd.to_numeric(df[c], errors="coerce").notna().sum() > 0:
@@ -647,7 +680,7 @@ def detectar_variables(df):
             if post is None and score_col(nc, patrones, post_tokens):
                 if pd.to_numeric(df[c], errors="coerce").notna().sum() > 0:
                     post = c
-        # 2) Si no hay PRE/POST, detectar columna genÃ©rica como POST para compatibilidad
+        # 2) Si no hay PRE/POST, detectar columna genérica como POST para compatibilidad
         if pre is None and post is None:
             for c, nc in norm_cols.items():
                 if any(normalizar(p) in nc for p in patrones):
@@ -662,7 +695,7 @@ def detectar_variables(df):
         print(f"- {k}: PRE={v.get('pre') if v.get('pre') else 'No'} | POST={v.get('post') if v.get('post') else 'No'}")
 
     if not variables:
-        print("ERROR: no se detectaron variables numÃ©ricas PRE/POST.")
+        print("ERROR: no se detectaron variables numéricas PRE/POST.")
         sys.exit(1)
     return variables
 
@@ -678,14 +711,14 @@ def convertir_variables(df, variables):
 
 def preparar_variables_pre_post(df, variables):
     """
-    AÃ±ade columnas de diferencia POST-PRE y genera el diccionario de variables para tablas/grÃ¡ficos.
+    Añade columnas de diferencia POST-PRE y genera el diccionario de variables para tablas/gráficos.
     """
     df = df.copy()
     variables_analisis = {}
     abrevs = {
         "RPE": "RPE",
         "Molestias (MS)": "MS",
-        "Capacidad fÃ­sica (PF)": "PF",
+        "Capacidad física (PF)": "PF",
         "Capacidad mental (MF)": "MF",
         "Confianza (RC)": "RC",
     }
@@ -710,7 +743,7 @@ def preparar_variables_pre_post(df, variables):
 def buscar_fila_arbitro(df_info, arbitro):
     if df_info is None or df_info.empty:
         return None
-    col_nombre = detectar_columna(df_info, ["full name", "nombre completo", "nombre", "arbitro", "Ã¡rbitro", "referee"], posicion=0)
+    col_nombre = detectar_columna(df_info, ["full name", "nombre completo", "nombre", "arbitro", "árbitro", "referee"], posicion=0)
     objetivo = normalizar_simple(arbitro)
     for _, row in df_info.iterrows():
         valor = normalizar_simple(row.get(col_nombre, ""))
@@ -817,18 +850,18 @@ def buscar_foto(datos_dir, arbitro, datos_arbitro):
 
 def calcular_indices_fatiga(df, variables, indices_seleccionados):
     """
-    Calcula Ã­ndices PRE, POST y diferencia POST-PRE cuando existen datos suficientes.
+    Calcula índices PRE, POST y diferencia POST-PRE cuando existen datos suficientes.
 
     IGFA simple PRE/POST = [RPE + MS + (10-PF) + (10-MF) + (10-RC)] / 5
     IGFA ponderado PRE/POST = 0.30*RPE + 0.25*MS + 0.20*(10-PF) + 0.15*(10-MF) + 0.10*(10-RC)
     Delta = POST - PRE
     """
     df = df.copy()
-    requeridas = ["RPE", "Molestias (MS)", "Capacidad fÃ­sica (PF)", "Capacidad mental (MF)", "Confianza (RC)"]
+    requeridas = ["RPE", "Molestias (MS)", "Capacidad física (PF)", "Capacidad mental (MF)", "Confianza (RC)"]
     faltan = [v for v in requeridas if v not in variables]
 
     if faltan:
-        print("AVISO: no se pueden calcular los Ã­ndices de fatiga. Faltan variables:", ", ".join(faltan))
+        print("AVISO: no se pueden calcular los índices de fatiga. Faltan variables:", ", ".join(faltan))
         return df, {}
 
     def get_var(label, momento):
@@ -842,7 +875,7 @@ def calcular_indices_fatiga(df, variables, indices_seleccionados):
     for momento in ["pre", "post"]:
         rpe = get_var("RPE", momento)
         ms = get_var("Molestias (MS)", momento)
-        pf = get_var("Capacidad fÃ­sica (PF)", momento)
+        pf = get_var("Capacidad física (PF)", momento)
         mf = get_var("Capacidad mental (MF)", momento)
         rc = get_var("Confianza (RC)", momento)
         if any(x is None for x in [rpe, ms, pf, mf, rc]):
@@ -888,7 +921,7 @@ def clasificar_igfa(valor, idioma="castellano"):
 
 
 def tabla_partidos(df, col_partido, variables, indices_variables=None, idioma="castellano"):
-    # Incluye GÃ©nero justo despuÃ©s de Partido si existe en los datos filtrados.
+    # Incluye Género justo después de Partido si existe en los datos filtrados.
     columnas_base = [col_partido]
     if "_GENERO_STD" in df.columns:
         columnas_base.append("_GENERO_STD")
@@ -901,22 +934,22 @@ def tabla_partidos(df, col_partido, variables, indices_variables=None, idioma="c
 
     rename = {col_partido: "Partido"}
     if "_GENERO_STD" in out.columns:
-        rename["_GENERO_STD"] = "GÃ©nero"
+        rename["_GENERO_STD"] = "Género"
     rename.update({v: k for k, v in variables.items()})
     rename.update({v: k for k, v in indices_variables.items()})
     out = out.rename(columns=rename)
 
     for c in out.columns:
-        if c not in ["Partido", "GÃ©nero"]:
+        if c not in ["Partido", "Género"]:
             if c.startswith("IGFA"):
                 out[c] = pd.to_numeric(out[c], errors="coerce").round(2)
             else:
                 out[c] = pd.to_numeric(out[c], errors="coerce").round(0).astype("Int64")
 
     if "IGFA simple" in out.columns:
-        out["ClasificaciÃ³n IGFA simple"] = out["IGFA simple"].map(lambda x: clasificar_igfa(x, idioma))
+        out["Clasificación IGFA simple"] = out["IGFA simple"].map(lambda x: clasificar_igfa(x, idioma))
     if "IGFA ponderado" in out.columns:
-        out["ClasificaciÃ³n IGFA ponderado"] = out["IGFA ponderado"].map(lambda x: clasificar_igfa(x, idioma))
+        out["Clasificación IGFA ponderado"] = out["IGFA ponderado"].map(lambda x: clasificar_igfa(x, idioma))
 
     return traducir_df(out, idioma)
 
@@ -950,13 +983,13 @@ def grafico_variable_por_partidos(df, col_partido, etiqueta, col_variable, ruta,
 
     plt.figure(figsize=(max(8.8, len(datos)*0.72), 4.9))
 
-    # LÃ­nea real: se representan los valores observados sin suavizado ni interpolaciÃ³n.
+    # Línea real: se representan los valores observados sin suavizado ni interpolación.
     plt.plot(x, y, color="black", linewidth=2.2)
 
     # Puntos: borde negro, interior blanco.
     plt.scatter(x, y, s=52, facecolors="white", edgecolors="black", linewidths=1.7, zorder=3)
 
-    # LÃ­nea de tendencia discontinua con ecuaciÃ³n, sin recuadro.
+    # Línea de tendencia discontinua con ecuación, sin recuadro.
     tendencia = None
     if len(y) >= 2:
         m, b = np.polyfit(x, y, 1)
@@ -967,10 +1000,10 @@ def grafico_variable_por_partidos(df, col_partido, etiqueta, col_variable, ruta,
         tendencia = (float(m), float(r2))
         plt.plot(x, yp, color="black", linestyle="--", linewidth=1.25, alpha=0.75)
         signo = "+" if b >= 0 else "-"
-        ecuacion = f"y = {m:.2f}x {signo} {abs(b):.2f} | RÂ² = {r2:.2f}"
+        ecuacion = f"y = {m:.2f}x {signo} {abs(b):.2f} | R² = {r2:.2f}"
         plt.gcf().text(0.98, 0.965, ecuacion, ha="right", va="top", fontsize=9, color="black")
 
-    # NÃºmeros sin decimales.
+    # Números sin decimales.
     for xi, yi in zip(x, y):
         plt.text(xi, yi + 0.18, f"{yi:.0f}", ha="center", fontsize=9, color="black")
 
@@ -1010,7 +1043,7 @@ def grafico_variable_por_grupo(resumen, columna_grupo, etiqueta, ruta, titulo, i
 
     plt.figure(figsize=(8.6, 4.7))
 
-    # LÃ­nea real: se representan los promedios observados por grupo sin suavizado ni interpolaciÃ³n.
+    # Línea real: se representan los promedios observados por grupo sin suavizado ni interpolación.
     plt.plot(x, y, color="black", linewidth=2.2)
 
     plt.scatter(x, y, s=52, facecolors="white", edgecolors="black", linewidths=1.7, zorder=3)
@@ -1025,7 +1058,7 @@ def grafico_variable_por_grupo(resumen, columna_grupo, etiqueta, ruta, titulo, i
         tendencia = (float(m), float(r2))
         plt.plot(x, yp, color="black", linestyle="--", linewidth=1.25, alpha=0.75)
         signo = "+" if b >= 0 else "-"
-        plt.gcf().text(0.98, 0.965, f"y = {m:.2f}x {signo} {abs(b):.2f} | RÂ² = {r2:.2f}", ha="right", va="top", fontsize=9, color="black")
+        plt.gcf().text(0.98, 0.965, f"y = {m:.2f}x {signo} {abs(b):.2f} | R² = {r2:.2f}", ha="right", va="top", fontsize=9, color="black")
 
     for xi, yi in zip(x, y):
         plt.text(xi, yi + 0.18, f"{yi:.0f}", ha="center", fontsize=9, color="black")
@@ -1066,10 +1099,10 @@ def lectura_tendencia(etiqueta, tendencia, idioma="castellano"):
         return "no pudo estimarse una tendencia lineal estable" if idioma != "ingles" else "a stable linear trend could not be estimated"
     m, r2 = tendencia
     if r2 < 0.10:
-        return "la tendencia lineal se muestra con baja capacidad explicativa (RÂ² < 0,10); debe interpretarse con prudencia" if idioma != "ingles" else "the linear trend is shown with low explanatory capacity (RÂ² < 0.10) and should be interpreted cautiously"
+        return "la tendencia lineal se muestra con baja capacidad explicativa (R² < 0,10); debe interpretarse con prudencia" if idioma != "ingles" else "the linear trend is shown with low explanatory capacity (R² < 0.10) and should be interpreted cautiously"
     estado = sentido_variable(etiqueta)
     if abs(m) < 0.05:
-        return f"la tendencia fue estable (pendiente={m:.2f}; RÂ²={r2:.2f})" if idioma != "ingles" else f"the trend was stable (slope={m:.2f}; RÂ²={r2:.2f})"
+        return f"la tendencia fue estable (pendiente={m:.2f}; R²={r2:.2f})" if idioma != "ingles" else f"the trend was stable (slope={m:.2f}; R²={r2:.2f})"
     if idioma == "ingles":
         direccion = "upward" if m > 0 else "downward"
         if estado in ["peor_alto", "delta_peor_alto"]:
@@ -1078,7 +1111,7 @@ def lectura_tendencia(etiqueta, tendencia, idioma="castellano"):
             significado = "favourable" if m > 0 else "unfavourable"
         else:
             significado = "descriptive"
-        return f"the trend was {direccion} and {significado} (slope={m:.2f}; RÂ²={r2:.2f})"
+        return f"the trend was {direccion} and {significado} (slope={m:.2f}; R²={r2:.2f})"
     direccion = "ascendente" if m > 0 else "descendente"
     if estado in ["peor_alto", "delta_peor_alto"]:
         significado = "desfavorable" if m > 0 else "favorable"
@@ -1086,7 +1119,7 @@ def lectura_tendencia(etiqueta, tendencia, idioma="castellano"):
         significado = "favorable" if m > 0 else "desfavorable"
     else:
         significado = "descriptiva"
-    return f"la tendencia fue {direccion} y de significado {significado} (pendiente={m:.2f}; RÂ²={r2:.2f})"
+    return f"la tendencia fue {direccion} y de significado {significado} (pendiente={m:.2f}; R²={r2:.2f})"
 
 
 def interpretar_partido(etiqueta, stats, idioma="castellano"):
@@ -1098,8 +1131,8 @@ def interpretar_partido(etiqueta, stats, idioma="castellano"):
         return (f"{stats['n']} matches were analysed using direct match values, without smoothing or interpolation. "
                 f"The mean was {stats['media']:.2f}, with values ranging from {stats['min']:.0f} to {stats['max']:.0f}. "
                 f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {sentido}")
-    sentido = "Valores altos indican peor estado subjetivo." if estado in ["peor_alto", "delta_peor_alto"] else "Valores altos indican un estado subjetivo mÃ¡s favorable." if estado in ["mejor_alto", "delta_mejor_alto"] else "La variable se interpreta de forma descriptiva."
-    return (f"Se analizaron {stats['n']} partidos mediante valores directos, sin suavizado ni interpolaciÃ³n. "
+    sentido = "Valores altos indican peor estado subjetivo." if estado in ["peor_alto", "delta_peor_alto"] else "Valores altos indican un estado subjetivo más favorable." if estado in ["mejor_alto", "delta_mejor_alto"] else "La variable se interpreta de forma descriptiva."
+    return (f"Se analizaron {stats['n']} partidos mediante valores directos, sin suavizado ni interpolación. "
             f"La media fue {stats['media']:.2f}, con valores entre {stats['min']:.0f} y {stats['max']:.0f}. "
             f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {sentido}")
 
@@ -1113,8 +1146,8 @@ def interpretar_grupo(etiqueta, stats, tipo, idioma="castellano"):
         return (f"The {tipo} analysis compared observed group means without smoothing. "
                 f"The overall mean was {stats['media']:.2f}, with group means ranging from {stats['min']:.0f} to {stats['max']:.0f}. "
                 f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {sentido}")
-    sentido = "Medias mÃ¡s altas indican peor respuesta subjetiva." if estado in ["peor_alto", "delta_peor_alto"] else "Medias mÃ¡s altas indican una respuesta subjetiva mÃ¡s favorable." if estado in ["mejor_alto", "delta_mejor_alto"] else "Las medias se interpretan de forma descriptiva."
-    return (f"El anÃ¡lisis {tipo} comparÃ³ medias observadas por grupo, sin suavizado. "
+    sentido = "Medias más altas indican peor respuesta subjetiva." if estado in ["peor_alto", "delta_peor_alto"] else "Medias más altas indican una respuesta subjetiva más favorable." if estado in ["mejor_alto", "delta_mejor_alto"] else "Las medias se interpretan de forma descriptiva."
+    return (f"El análisis {tipo} comparó medias observadas por grupo, sin suavizado. "
             f"La media global fue {stats['media']:.2f}, con medias entre {stats['min']:.0f} y {stats['max']:.0f}. "
             f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {sentido}")
 
@@ -1148,11 +1181,11 @@ def tabla_resumen_global(df, col_partido, variables_analisis, col_competitiva=No
             r2 = 1 - ss_res/ss_tot if ss_tot else 0.0
         filas.append({
             "Variable": etiqueta, "n": int(s.count()), "Media": round(float(s.mean()),2),
-            "MÃ­nimo": round(float(s.min()),2), "MÃ¡ximo": round(float(s.max()),2),
-            "Partido crÃ­tico": partido, "Valor crÃ­tico": round(float(valor),2),
+            "Mínimo": round(float(s.min()),2), "Máximo": round(float(s.max()),2),
+            "Partido crítico": partido, "Valor crítico": round(float(valor),2),
             "Pendiente": round(float(m),3) if pd.notna(m) else "No aplicable",
-            "RÂ²": round(float(r2),3) if pd.notna(r2) else "No aplicable",
-            "Tendencia visible": "SÃ­" if pd.notna(r2) else "No",
+            "R²": round(float(r2),3) if pd.notna(r2) else "No aplicable",
+            "Tendencia visible": "Sí" if pd.notna(r2) else "No",
             "Criterio": "Alto = peor" if estado in ["peor_alto", "delta_peor_alto"] else "Alto = mejor" if estado in ["mejor_alto", "delta_mejor_alto"] else "Descriptivo"
         })
     out = pd.DataFrame(filas)
@@ -1163,13 +1196,13 @@ def hallazgos_principales(df, col_partido, variables_base, variables_analisis, c
     h = []
     def add(txt):
         if txt: h.append(txt)
-    # partido mÃ¡s exigente por IGFA ponderado/simple POST o RPE POST
+    # partido más exigente por IGFA ponderado/simple POST o RPE POST
     candidatos = ["IGFA ponderado POST", "IGFA simple POST", "RPE POST", "Molestias (MS) POST"]
     for et in candidatos:
         if et in variables_analisis:
             ex = valor_extremo(df, col_partido, variables_analisis[et], peor_alto=True)
             if ex:
-                add(f"Partido mÃ¡s exigente: {ex[0]} ({et}={ex[1]:.2f}).")
+                add(f"Partido más exigente: {ex[0]} ({et}={ex[1]:.2f}).")
                 break
     for et in ["Î”IGFA ponderado", "Î”IGFA simple", "Î”RPE", "Î”MS"]:
         if et in variables_analisis:
@@ -1177,11 +1210,11 @@ def hallazgos_principales(df, col_partido, variables_base, variables_analisis, c
             if ex:
                 add(f"Mayor incremento de fatiga: {ex[0]} ({et}={ex[1]:.2f}; valores positivos indican empeoramiento cuando la variable es RPE, MS o IGFA).")
                 break
-    for et in ["Capacidad fÃ­sica (PF) POST", "Capacidad mental (MF) POST", "Confianza (RC) POST"]:
+    for et in ["Capacidad física (PF) POST", "Capacidad mental (MF) POST", "Confianza (RC) POST"]:
         if et in variables_analisis:
             ex = valor_extremo(df, col_partido, variables_analisis[et], peor_alto=False)
             if ex:
-                add(f"Peor recuperaciÃ³n/disposiciÃ³n percibida: {ex[0]} ({et}={ex[1]:.2f}; valores bajos son menos favorables).")
+                add(f"Peor recuperación/disposición percibida: {ex[0]} ({et}={ex[1]:.2f}; valores bajos son menos favorables).")
                 break
     for et in ["Confianza (RC) POST", "Confianza (RC) PRE"]:
         if et in variables_analisis:
@@ -1195,8 +1228,8 @@ def hallazgos_principales(df, col_partido, variables_base, variables_analisis, c
     if col_competitiva and col_competitiva in df.columns:
         counts = df[col_competitiva].astype(str).value_counts()
         if not counts.empty:
-            add("AnÃ¡lisis por dificultad competitiva incorporado: " + "; ".join([f"{k}: {v}" for k,v in counts.items()]) + ".")
-    # acumulaciÃ³n: pendiente de Ã­ndice/RPE si R2 visible
+            add("Análisis por dificultad competitiva incorporado: " + "; ".join([f"{k}: {v}" for k,v in counts.items()]) + ".")
+    # acumulación: pendiente de índice/RPE si R2 visible
     for et in ["IGFA ponderado POST", "IGFA simple POST", "RPE POST", "Molestias (MS) POST"]:
         if et in variables_analisis:
             s = pd.to_numeric(df[variables_analisis[et]], errors="coerce").dropna()
@@ -1204,11 +1237,11 @@ def hallazgos_principales(df, col_partido, variables_base, variables_analisis, c
                 x=np.arange(len(s)); y=s.values; m,b=np.polyfit(x,y,1); yp=m*x+b
                 ss_res=np.sum((y-yp)**2); ss_tot=np.sum((y-np.mean(y))**2); r2=1-ss_res/ss_tot if ss_tot else 0.0
                 if m > 0 and r2 >= 0.10:
-                    add(f"AcumulaciÃ³n de fatiga: compatible con aumento progresivo en {et} (pendiente={m:.2f}; RÂ²={r2:.2f}).")
+                    add(f"Acumulación de fatiga: compatible con aumento progresivo en {et} (pendiente={m:.2f}; R²={r2:.2f}).")
                 elif r2 >= 0.10:
-                    add(f"No se observa acumulaciÃ³n creciente de fatiga en {et} (pendiente={m:.2f}; RÂ²={r2:.2f}).")
+                    add(f"No se observa acumulación creciente de fatiga en {et} (pendiente={m:.2f}; R²={r2:.2f}).")
                 else:
-                    add(f"No se informa tendencia acumulativa en {et} por RÂ² < 0,10.")
+                    add(f"No se informa tendencia acumulativa en {et} por R² < 0,10.")
                 break
     return h
 
@@ -1216,15 +1249,15 @@ def hallazgos_principales(df, col_partido, variables_base, variables_analisis, c
 def interpretacion_integrada(hallazgos, idioma="castellano"):
     if idioma == "ingles":
         return "Integrated interpretation: " + " ".join(hallazgos) if hallazgos else "Integrated interpretation: the available data do not support a robust automatic interpretation."
-    return "InterpretaciÃ³n integrada: " + " ".join(hallazgos) if hallazgos else "InterpretaciÃ³n integrada: los datos disponibles no permiten una interpretaciÃ³n automÃ¡tica robusta."
+    return "Interpretación integrada: " + " ".join(hallazgos) if hallazgos else "Interpretación integrada: los datos disponibles no permiten una interpretación automática robusta."
 
 
 def conclusion_cientifica_automatica(hallazgos, idioma="castellano"):
     if idioma == "ingles":
         return ("Scientific conclusion: the report identifies the most demanding matches and the main subjective fatigue/recovery patterns. "
                 "All conclusions are descriptive and depend on the available observations; no inferential claims are made automatically. " + " ".join(hallazgos[:3]))
-    return ("ConclusiÃ³n cientÃ­fica: el informe identifica los partidos de mayor exigencia y los principales patrones subjetivos de fatiga, recuperaciÃ³n y confianza. "
-            "Las conclusiones son descriptivas y dependen de las observaciones disponibles; no se formulan inferencias automÃ¡ticas no justificadas. " + " ".join(hallazgos[:3]))
+    return ("Conclusión científica: el informe identifica los partidos de mayor exigencia y los principales patrones subjetivos de fatiga, recuperación y confianza. "
+            "Las conclusiones son descriptivas y dependen de las observaciones disponibles; no se formulan inferencias automáticas no justificadas. " + " ".join(hallazgos[:3]))
 
 # =============================================================================
 # WORD
@@ -1270,8 +1303,8 @@ def add_table_df(doc, df, idioma="castellano"):
 
 def tabla_resumen_vertical(df, columna_grupo):
     """
-    Cambia orientaciÃ³n de tablas resumen anchas:
-    MÃ©trica | grupo_1 | grupo_2 | grupo_3 ...
+    Cambia orientación de tablas resumen anchas:
+    Métrica | grupo_1 | grupo_2 | grupo_3 ...
     """
     if df is None or df.empty or columna_grupo not in df.columns:
         return df
@@ -1279,7 +1312,7 @@ def tabla_resumen_vertical(df, columna_grupo):
     metricas = [c for c in df.columns if c != columna_grupo]
     filas = []
     for m in metricas:
-        fila = {"MÃ©trica": m}
+        fila = {"Métrica": m}
         for _, row in df.iterrows():
             fila[str(row[columna_grupo])] = row[m]
         filas.append(fila)
@@ -1297,21 +1330,21 @@ def tabla_siglas_variables(idioma="castellano"):
             {"Abbreviation": "MS", "Full name": "Muscle Soreness", "Brief explanation": "Reflects perceived muscle soreness or discomfort. It helps contextualise recovery status and potential accumulated fatigue responses after repeated efforts (Saw et al., 2016; Kellmann et al., 2018)."},
             {"Abbreviation": "PF", "Full name": "Physical Fitness", "Brief explanation": "Describes the perceived physical state available for competition. It can complement external load and help contextualise functional readiness before or after the match (Saw et al., 2016; McLaren et al., 2018)."},
             {"Abbreviation": "MF", "Full name": "Mental Fitness", "Brief explanation": "Summarises perceived mental clarity, concentration and readiness. It is relevant because mental fatigue can increase perceived exertion and affect decision-making performance (Marcora et al., 2009)."},
-            {"Abbreviation": "RC", "Full name": "Referee Confidence", "Brief explanation": "Represents perceived confidence to officiate and make decisions during the match. In competitive contexts, confidence may modulate psychological response and officiating performance (GuillÃ©n & Feltz, 2011)."},
+            {"Abbreviation": "RC", "Full name": "Referee Confidence", "Brief explanation": "Represents perceived confidence to officiate and make decisions during the match. In competitive contexts, confidence may modulate psychological response and officiating performance (Guillén & Feltz, 2011)."},
             {"Abbreviation": "Simple GRFI", "Full name": "Simple Global Referee Fatigue Index", "Brief explanation": "Composite index calculated as the mean of RPE, muscle soreness and the inverted positive variables: 10-PF, 10-MF and 10-RC. It summarises global subjective fatigue on a 0-10 scale. Its rationale is based on the combined use of subjective measures to monitor internal response and recovery (Saw et al., 2016; Kellmann et al., 2018)."},
-            {"Abbreviation": "Weighted GRFI", "Full name": "Weighted Global Referee Fatigue Index", "Brief explanation": "Composite index giving greater weight to RPE and muscle soreness: 0.30Â·RPE + 0.25Â·MS + 0.20Â·(10-PF) + 0.15Â·(10-MF) + 0.10Â·(10-RC). It prioritises perceived load and muscle discomfort while maintaining physical, mental and confidence components as subjective modulators (Foster et al., 2001; McLaren et al., 2018)."},
+            {"Abbreviation": "Weighted GRFI", "Full name": "Weighted Global Referee Fatigue Index", "Brief explanation": "Composite index giving greater weight to RPE and muscle soreness: 0.30·RPE + 0.25·MS + 0.20·(10-PF) + 0.15·(10-MF) + 0.10·(10-RC). It prioritises perceived load and muscle discomfort while maintaining physical, mental and confidence components as subjective modulators (Foster et al., 2001; McLaren et al., 2018)."},
         ])
 
     return pd.DataFrame([
-        {"Sigla": "RPE", "Nombre completo": "Rating of Perceived Exertion / PercepciÃ³n subjetiva del esfuerzo", "ExplicaciÃ³n breve": "Indicador subjetivo de la intensidad percibida. Es Ãºtil para monitorizar la carga interna porque integra seÃ±ales fisiolÃ³gicas y perceptivas del deportista o Ã¡rbitro (Foster et al., 2001; Saw et al., 2016)."},
-        {"Sigla": "MS", "Nombre completo": "Muscle Soreness / Molestias musculares", "ExplicaciÃ³n breve": "Refleja la percepciÃ³n de molestias o dolor muscular. Ayuda a interpretar el estado de recuperaciÃ³n y posibles respuestas de fatiga acumulada tras esfuerzos repetidos (Saw et al., 2016; Kellmann et al., 2018)."},
-        {"Sigla": "PF", "Nombre completo": "Physical Fitness / Capacidad fÃ­sica percibida", "ExplicaciÃ³n breve": "Describe la percepciÃ³n del estado fÃ­sico disponible para competir. Puede complementar la carga externa y ayudar a contextualizar la preparaciÃ³n funcional antes o despuÃ©s del partido (Saw et al., 2016; McLaren et al., 2018)."},
-        {"Sigla": "MF", "Nombre completo": "Mental Fitness / Capacidad mental percibida", "ExplicaciÃ³n breve": "Resume la percepciÃ³n de claridad, concentraciÃ³n y disposiciÃ³n mental. Es relevante porque la fatiga mental puede aumentar el esfuerzo percibido y afectar al rendimiento decisional (Marcora et al., 2009)."},
-        {"Sigla": "RC", "Nombre completo": "Referee Confidence / Confianza arbitral percibida", "ExplicaciÃ³n breve": "Representa la seguridad percibida para actuar y tomar decisiones durante el partido. En contextos competitivos, la confianza puede modular la respuesta psicolÃ³gica y la calidad de la actuaciÃ³n (GuillÃ©n & Feltz, 2011)."},
+        {"Sigla": "RPE", "Nombre completo": "Rating of Perceived Exertion / Percepción subjetiva del esfuerzo", "Explicación breve": "Indicador subjetivo de la intensidad percibida. Es útil para monitorizar la carga interna porque integra señales fisiológicas y perceptivas del deportista o árbitro (Foster et al., 2001; Saw et al., 2016)."},
+        {"Sigla": "MS", "Nombre completo": "Muscle Soreness / Molestias musculares", "Explicación breve": "Refleja la percepción de molestias o dolor muscular. Ayuda a interpretar el estado de recuperación y posibles respuestas de fatiga acumulada tras esfuerzos repetidos (Saw et al., 2016; Kellmann et al., 2018)."},
+        {"Sigla": "PF", "Nombre completo": "Physical Fitness / Capacidad física percibida", "Explicación breve": "Describe la percepción del estado físico disponible para competir. Puede complementar la carga externa y ayudar a contextualizar la preparación funcional antes o después del partido (Saw et al., 2016; McLaren et al., 2018)."},
+        {"Sigla": "MF", "Nombre completo": "Mental Fitness / Capacidad mental percibida", "Explicación breve": "Resume la percepción de claridad, concentración y disposición mental. Es relevante porque la fatiga mental puede aumentar el esfuerzo percibido y afectar al rendimiento decisional (Marcora et al., 2009)."},
+        {"Sigla": "RC", "Nombre completo": "Referee Confidence / Confianza arbitral percibida", "Explicación breve": "Representa la seguridad percibida para actuar y tomar decisiones durante el partido. En contextos competitivos, la confianza puede modular la respuesta psicológica y la calidad de la actuación (Guillén & Feltz, 2011)."},
         {"Sigla": "IGFA simple", "Nombre completo": "Ãndice Global de Fatiga Arbitral simple", "ExplicaciÃ³n breve": "Ãndice compuesto calculado como la media de RPE, molestias y las variables positivas invertidas: 10-PF, 10-MF y 10-RC. Resume la fatiga subjetiva global en escala 0-10. Su lÃ³gica se apoya en el uso combinado de medidas subjetivas para monitorizar la respuesta interna y la recuperaciÃ³n (Saw et al., 2016; Kellmann et al., 2018)."},
         {"Sigla": "IGFA ponderado", "Nombre completo": "Ãndice Global de Fatiga Arbitral ponderado", "ExplicaciÃ³n breve": "Ãndice compuesto que otorga mayor peso a RPE y molestias: 0.30Â·RPE + 0.25Â·MS + 0.20Â·(10-PF) + 0.15Â·(10-MF) + 0.10Â·(10-RC). Permite priorizar la carga percibida y el malestar muscular, manteniendo el componente fÃ­sico, mental y de confianza como moduladores subjetivos (Foster et al., 2001; McLaren et al., 2018)."},
 
-        {"Sigla": "Dificultad competitiva", "Nombre completo": "Nivel competitivo del partido", "ExplicaciÃ³n breve": "Indica si un partido fue muy igualado o muy desequilibrado. Se calcula principalmente a partir de la diferencia final del marcador, incorporando ademÃ¡s el volumen total de puntos y la posiciÃ³n relativa del partido dentro del torneo. Una dificultad alta representa encuentros mÃ¡s igualados y competitivos; una dificultad baja representa partidos con diferencias amplias en el marcador."},
+        {"Sigla": "Dificultad competitiva", "Nombre completo": "Nivel competitivo del partido", "Explicación breve": "Indica si un partido fue muy igualado o muy desequilibrado. Se calcula principalmente a partir de la diferencia final del marcador, incorporando además el volumen total de puntos y la posición relativa del partido dentro del torneo. Una dificultad alta representa encuentros más igualados y competitivos; una dificultad baja representa partidos con diferencias amplias en el marcador."},
     ])
 
 
@@ -1322,12 +1355,12 @@ def insertar_tabla_siglas_y_referencias(doc, idioma="castellano"):
 
     add_heading(doc, TEXTOS[idioma]["referencias"], size=14)
     refs = [
-        "Foster, C., Florhaug, J. A., Franklin, J., Gottschall, L., Hrovatin, L. A., Parker, S., Doleshal, P., & Dodge, C. (2001). A new approach to monitoring exercise training. Journal of Strength and Conditioning Research, 15(1), 109â€“115.",
-        "GuillÃ©n, F., & Feltz, D. L. (2011). A conceptual model of referee efficacy. Frontiers in Psychology, 2, 25.",
-        "Kellmann, M., Bertollo, M., Bosquet, L., Brink, M., Coutts, A. J., Duffield, R., Erlacher, D., Halson, S. L., Hecksteden, A., Heidari, J., Kallus, K. W., Meeusen, R., Mujika, I., Robazza, C., Skorski, S., Venter, R., & Beckmann, J. (2018). Recovery and performance in sport: Consensus statement. International Journal of Sports Physiology and Performance, 13(2), 240â€“245.",
-        "Marcora, S. M., Staiano, W., & Manning, V. (2009). Mental fatigue impairs physical performance in humans. Journal of Applied Physiology, 106(3), 857â€“864.",
-        "McLaren, S. J., Macpherson, T. W., Coutts, A. J., Hurst, C., Spears, I. R., & Weston, M. (2018). The relationships between internal and external measures of training load and intensity in team sports: A meta-analysis. Sports Medicine, 48(3), 641â€“658.",
-        "Saw, A. E., Main, L. C., & Gastin, P. B. (2016). Monitoring the athlete training response: Subjective self-reported measures trump commonly used objective measures. British Journal of Sports Medicine, 50(5), 281â€“291.",
+        "Foster, C., Florhaug, J. A., Franklin, J., Gottschall, L., Hrovatin, L. A., Parker, S., Doleshal, P., & Dodge, C. (2001). A new approach to monitoring exercise training. Journal of Strength and Conditioning Research, 15(1), 109–115.",
+        "Guillén, F., & Feltz, D. L. (2011). A conceptual model of referee efficacy. Frontiers in Psychology, 2, 25.",
+        "Kellmann, M., Bertollo, M., Bosquet, L., Brink, M., Coutts, A. J., Duffield, R., Erlacher, D., Halson, S. L., Hecksteden, A., Heidari, J., Kallus, K. W., Meeusen, R., Mujika, I., Robazza, C., Skorski, S., Venter, R., & Beckmann, J. (2018). Recovery and performance in sport: Consensus statement. International Journal of Sports Physiology and Performance, 13(2), 240–245.",
+        "Marcora, S. M., Staiano, W., & Manning, V. (2009). Mental fatigue impairs physical performance in humans. Journal of Applied Physiology, 106(3), 857–864.",
+        "McLaren, S. J., Macpherson, T. W., Coutts, A. J., Hurst, C., Spears, I. R., & Weston, M. (2018). The relationships between internal and external measures of training load and intensity in team sports: A meta-analysis. Sports Medicine, 48(3), 641–658.",
+        "Saw, A. E., Main, L. C., & Gastin, P. B. (2016). Monitoring the athlete training response: Subjective self-reported measures trump commonly used objective measures. British Journal of Sports Medicine, 50(5), 281–291.",
     ]
     for ref in refs:
         p = doc.add_paragraph(ref)
@@ -1348,7 +1381,7 @@ def rellenar_tabla_datos_y_foto(doc, datos_arbitro, ruta_foto):
             break
 
     if tabla_obj is None:
-        print("AVISO: no se encontrÃ³ la tabla Variable/Valor/Foto en la plantilla.")
+        print("AVISO: no se encontró la tabla Variable/Valor/Foto en la plantilla.")
         return False
 
     foto_insertada = False
@@ -1376,9 +1409,9 @@ def rellenar_tabla_datos_y_foto(doc, datos_arbitro, ruta_foto):
                     run.add_picture(str(ruta_foto), width=Inches(2.0))
                     foto_insertada = True
                 else:
-                    p.add_run("Sin fotografÃ­a detectada.")
+                    p.add_run("Sin fotografía detectada.")
 
-    # Por si la celda foto estÃ¡ combinada y solo aparece una vez fuera del loop Ãºtil.
+    # Por si la celda foto está combinada y solo aparece una vez fuera del loop útil.
     if not foto_insertada:
         for row in tabla_obj.rows:
             for cell in row.cells:
@@ -1391,7 +1424,7 @@ def rellenar_tabla_datos_y_foto(doc, datos_arbitro, ruta_foto):
                         run.add_picture(str(ruta_foto), width=Inches(2.0))
                         foto_insertada = True
                     else:
-                        p.add_run("Sin fotografÃ­a detectada.")
+                        p.add_run("Sin fotografía detectada.")
                     break
             if foto_insertada:
                 break
@@ -1418,7 +1451,7 @@ def sentido_variable(etiqueta):
     Variables positivas: valores altos = mejor estado.
     Deltas: siempre POST - PRE.
       - Î”RPE, Î”MS, Î”IGFA > 0 = empeoramiento.
-      - Î”PF, Î”MF, Î”RC > 0 = mejora/disposiciÃ³n mÃ¡s favorable.
+      - ΔPF, ΔMF, ΔRC > 0 = mejora/disposición más favorable.
     """
     e_raw = str(etiqueta).strip().lower()
     e = normalizar(etiqueta)
@@ -1439,16 +1472,16 @@ def sentido_variable(etiqueta):
 def criterio_delta_texto(etiqueta, idioma="castellano"):
     estado = sentido_variable(etiqueta)
     if estado == "delta_peor_alto":
-        return ("Diferencia POST-PRE: valores positivos indican aumento de carga/fatiga percibida; valores negativos indican reducciÃ³n o mejor recuperaciÃ³n." if idioma != "ingles" else
+        return ("Diferencia POST-PRE: valores positivos indican aumento de carga/fatiga percibida; valores negativos indican reducción o mejor recuperación." if idioma != "ingles" else
                 "POST-PRE difference: positive values indicate increased perceived load/fatigue; negative values indicate reduction or better recovery.")
     if estado == "delta_mejor_alto":
-        return ("Diferencia POST-PRE: valores positivos indican mejora de la disposiciÃ³n percibida; valores negativos indican deterioro del estado fÃ­sico, mental o de confianza." if idioma != "ingles" else
+        return ("Diferencia POST-PRE: valores positivos indican mejora de la disposición percibida; valores negativos indican deterioro del estado físico, mental o de confianza." if idioma != "ingles" else
                 "POST-PRE difference: positive values indicate improved perceived readiness; negative values indicate deterioration in physical, mental or confidence status.")
     return ""
 
 
 def buscar_foto(datos_dir, arbitro, datos_arbitro):
-    """BÃºsqueda robusta de fotografÃ­a del Ã¡rbitro en Datos y subcarpetas."""
+    """Búsqueda robusta de fotografía del árbitro en Datos y subcarpetas."""
     p = ruta_foto_desde_datos(datos_dir, datos_arbitro)
     if p and p.exists():
         return p
@@ -1481,7 +1514,7 @@ def buscar_foto(datos_dir, arbitro, datos_arbitro):
         if partes and any(p in stem for p in partes):
             return img
 
-    # AproximaciÃ³n final por similitud de texto.
+    # Aproximación final por similitud de texto.
     try:
         from difflib import SequenceMatcher
         scored = []
@@ -1566,11 +1599,11 @@ def interpretar_partido(etiqueta, stats, idioma="castellano"):
                 f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {criterio} {delta_txt}").strip()
     criterio = {
         "peor_alto": "Valores altos representan peor estado subjetivo.",
-        "mejor_alto": "Valores altos representan un estado subjetivo mÃ¡s favorable.",
+        "mejor_alto": "Valores altos representan un estado subjetivo más favorable.",
         "delta_peor_alto": "Valores positivos POST-PRE representan empeoramiento.",
         "delta_mejor_alto": "Valores positivos POST-PRE representan mejora."
     }.get(estado, "Variable descriptiva.")
-    return (f"Se analizaron valores observados directos por partido (n={stats['n']}), sin suavizado ni interpolaciÃ³n. "
+    return (f"Se analizaron valores observados directos por partido (n={stats['n']}), sin suavizado ni interpolación. "
             f"El rango observado fue {stats['min']:.2f}-{stats['max']:.2f}, con una media de {stats['media']:.2f}. "
             f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {criterio} {delta_txt}").strip()
 
@@ -1584,8 +1617,8 @@ def interpretar_grupo(etiqueta, stats, tipo, idioma="castellano"):
         return (f"The {tipo} comparison summarises real group means, not modelled or smoothed values. "
                 f"Group means ranged from {stats['min']:.2f} to {stats['max']:.2f}. "
                 f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {delta_txt}").strip()
-    criterio = "medias mÃ¡s altas son desfavorables" if estado in ["peor_alto", "delta_peor_alto"] else "medias mÃ¡s altas son favorables" if estado in ["mejor_alto", "delta_mejor_alto"] else "lectura descriptiva"
-    return (f"La comparaciÃ³n {tipo} resume medias reales por grupo, no valores modelizados ni suavizados. "
+    criterio = "medias más altas son desfavorables" if estado in ["peor_alto", "delta_peor_alto"] else "medias más altas son favorables" if estado in ["mejor_alto", "delta_mejor_alto"] else "lectura descriptiva"
+    return (f"La comparación {tipo} resume medias reales por grupo, no valores modelizados ni suavizados. "
             f"Las medias oscilaron entre {stats['min']:.2f} y {stats['max']:.2f}; {criterio}. "
             f"{lectura_tendencia(etiqueta, stats.get('tendencia'), idioma)}. {delta_txt}").strip()
 
@@ -1628,7 +1661,7 @@ def grafico_heatmap_partido_variables(df, col_partido, variables_analisis, ruta,
             z = np.full_like(v, 0.5, dtype=float)
         else:
             z = (v - mn) / (mx - mn)
-        # Para variables positivas, se invierte para que mÃ¡s oscuro/alto represente peor estado relativo.
+        # Para variables positivas, se invierte para que más oscuro/alto represente peor estado relativo.
         if sentido_variable(et) in ["mejor_alto", "delta_mejor_alto"]:
             z = 1 - z
         mat.append(z)
@@ -1643,7 +1676,7 @@ def grafico_heatmap_partido_variables(df, col_partido, variables_analisis, ruta,
     plt.colorbar(im, fraction=0.025, pad=0.02, label="Carga relativa" if idioma != "ingles" else "Relative burden")
     plt.yticks(np.arange(len(df)), [etiqueta_x(x, 22) for x in df[col_partido].astype(str)], fontsize=8)
     plt.xticks(np.arange(len(labels_var)), labels_var, rotation=45, ha="right", fontsize=8)
-    plt.title("Heatmap Partido Ã— Variables" if idioma != "ingles" else "Match Ã— Variables heatmap")
+    plt.title("Heatmap Partido × Variables" if idioma != "ingles" else "Match × Variables heatmap")
     plt.tight_layout()
     plt.savefig(ruta, dpi=240)
     plt.close()
@@ -1667,7 +1700,7 @@ def discutir_partidos_criticos(df, col_partido, variables_analisis, col_competit
             if not sub.empty:
                 cat = limpiar_texto(sub.iloc[0].get(col_competitiva, "")) or "No disponible"
         interpret = criterio_delta_texto(etiqueta, idioma) or ("Valor alto desfavorable" if peor_alto else "Valor bajo desfavorable")
-        filas.append({"Variable": etiqueta, "Partido crÃ­tico": partido, "Dificultad competitiva": cat, "Valor": round(valor,2), "Lectura": interpret})
+        filas.append({"Variable": etiqueta, "Partido crítico": partido, "Dificultad competitiva": cat, "Valor": round(valor,2), "Lectura": interpret})
     return traducir_df(pd.DataFrame(filas), idioma)
 
 
@@ -1693,32 +1726,32 @@ def discusion_integrada_una_pagina(df, col_partido, variables_analisis, col_comp
             ss_res=np.sum((y-yp)**2); ss_tot=np.sum((y-np.mean(y))**2)
             r2=1-ss_res/ss_tot if ss_tot else 0.0
             if r2 >= 0.10:
-                tendencia_txt = f"En la variable principal ({principal}) se observÃ³ una pendiente de {m:.2f} con RÂ²={r2:.2f}, por lo que la tendencia se considera interpretable a nivel descriptivo. "
+                tendencia_txt = f"En la variable principal ({principal}) se observó una pendiente de {m:.2f} con R²={r2:.2f}, por lo que la tendencia se considera interpretable a nivel descriptivo. "
             else:
-                tendencia_txt = f"En la variable principal ({principal}) no se informa una tendencia lineal porque RÂ² fue inferior a 0,10. "
+                tendencia_txt = f"En la variable principal ({principal}) no se informa una tendencia lineal porque R² fue inferior a 0,10. "
     criticos = discutir_partidos_criticos(df, col_partido, variables_analisis, col_competitiva, idioma="castellano")
     crit_txt = ""
     if not criticos.empty:
         top = criticos.head(5)
-        crit_txt = "Los partidos crÃ­ticos se concentraron en: " + "; ".join([f"{r['Partido crÃ­tico']} ({r['Variable']}={r['Valor']})" for _, r in top.iterrows()]) + ". "
+        crit_txt = "Los partidos críticos se concentraron en: " + "; ".join([f"{r['Partido crítico']} ({r['Variable']}={r['Valor']})" for _, r in top.iterrows()]) + ". "
     dif_txt = ""
     if cats:
-        dif_txt = "La distribuciÃ³n por dificultad competitiva fue: " + "; ".join(cats) + ". "
+        dif_txt = "La distribución por dificultad competitiva fue: " + "; ".join(cats) + ". "
     base = (
-        f"La lectura integrada se realizÃ³ sobre {n} observaciones vÃ¡lidas del Ã¡rbitro, combinando variables PRE, POST y diferencias POST-PRE. "
-        f"El anÃ¡lisis evita inferencias no justificadas y se centra en patrones descriptivos: magnitud de la respuesta subjetiva, direcciÃ³n del cambio, identificaciÃ³n de partidos crÃ­ticos y relaciÃ³n con la dificultad competitiva. "
+        f"La lectura integrada se realizó sobre {n} observaciones válidas del árbitro, combinando variables PRE, POST y diferencias POST-PRE. "
+        f"El análisis evita inferencias no justificadas y se centra en patrones descriptivos: magnitud de la respuesta subjetiva, dirección del cambio, identificación de partidos críticos y relación con la dificultad competitiva. "
         f"{dif_txt}"
         f"{tendencia_txt}"
         f"{crit_txt}"
-        f"La interpretaciÃ³n de los deltas es especÃ­fica: en RPE, molestias e IGFA, un delta positivo representa mayor fatiga o peor respuesta postpartido; en capacidad fÃ­sica, capacidad mental y confianza, un delta positivo representa mejora de la disposiciÃ³n percibida, mientras que un delta negativo indica deterioro. "
-        f"Desde una perspectiva aplicada, los partidos identificados como crÃ­ticos no deben interpretarse de forma aislada, sino como seÃ±ales para revisar carga acumulada, recuperaciÃ³n entre partidos, contexto competitivo y estabilidad psicolÃ³gica. "
-        f"La comparaciÃ³n por dificultad competitiva permite valorar si los encuentros mÃ¡s equilibrados concentran mayor exigencia subjetiva o si la fatiga aparece por acumulaciÃ³n independientemente del equilibrio del marcador. "
-        f"Por tanto, el informe debe utilizarse como una herramienta de seguimiento individual del Ã¡rbitro, orientada a detectar momentos de mayor vulnerabilidad, ajustar estrategias de recuperaciÃ³n y apoyar la toma de decisiones durante torneos con congestiÃ³n competitiva."
+        f"La interpretación de los deltas es específica: en RPE, molestias e IGFA, un delta positivo representa mayor fatiga o peor respuesta postpartido; en capacidad física, capacidad mental y confianza, un delta positivo representa mejora de la disposición percibida, mientras que un delta negativo indica deterioro. "
+        f"Desde una perspectiva aplicada, los partidos identificados como críticos no deben interpretarse de forma aislada, sino como señales para revisar carga acumulada, recuperación entre partidos, contexto competitivo y estabilidad psicológica. "
+        f"La comparación por dificultad competitiva permite valorar si los encuentros más equilibrados concentran mayor exigencia subjetiva o si la fatiga aparece por acumulación independientemente del equilibrio del marcador. "
+        f"Por tanto, el informe debe utilizarse como una herramienta de seguimiento individual del árbitro, orientada a detectar momentos de mayor vulnerabilidad, ajustar estrategias de recuperación y apoyar la toma de decisiones durante torneos con congestión competitiva."
     )
     if hallazgos:
-        base += " Hallazgos automÃ¡ticos principales: " + " ".join(hallazgos[:5])
+        base += " Hallazgos automáticos principales: " + " ".join(hallazgos[:5])
     if idioma == "ingles":
-        return base  # Se mantiene versiÃ³n castellana si se desea una traducciÃ³n manual precisa.
+        return base  # Se mantiene versión castellana si se desea una traducción manual precisa.
     return base
 
 def crear_informe(ruta_plantilla, ruta_salida, datos_arbitro, ruta_foto, filtros, tabla_p, resumenes, figuras, tipos, n_obs, resumen_global=None, hallazgos=None, interpretacion=None, conclusion_auto=None, tabla_dificultad=None, tabla_criticos=None, discusion_integrada=None, idioma="castellano"):
@@ -1744,10 +1777,10 @@ def crear_informe(ruta_plantilla, ruta_salida, datos_arbitro, ruta_foto, filtros
             try:
                 doc.add_paragraph(str(h), style="List Bullet")
             except Exception:
-                doc.add_paragraph("â€¢ " + str(h))
+                doc.add_paragraph("• " + str(h))
 
     if resumen_global is not None and not resumen_global.empty:
-        heading("Tabla resumen cientÃ­fica" if idioma != "ingles" else "Scientific summary table")
+        heading("Tabla resumen científica" if idioma != "ingles" else "Scientific summary table")
         add_table_df(doc, resumen_global, idioma=idioma)
 
     if "partidos" in tipos:
@@ -1756,17 +1789,17 @@ def crear_informe(ruta_plantilla, ruta_salida, datos_arbitro, ruta_foto, filtros
         add_table_df(doc, tabla_p, idioma=idioma)
 
     if tabla_dificultad is not None and not tabla_dificultad.empty:
-        heading("ComparaciÃ³n real por dificultad competitiva" if idioma != "ingles" else "Real comparison by competitive difficulty")
-        doc.add_paragraph("La tabla compara los valores reales observados por categorÃ­a de dificultad competitiva. No se suavizan ni se modelizan los datos; cada celda resume la media y, cuando es posible, la desviaciÃ³n estÃ¡ndar dentro de cada nivel.")
+        heading("Comparación real por dificultad competitiva" if idioma != "ingles" else "Real comparison by competitive difficulty")
+        doc.add_paragraph("La tabla compara los valores reales observados por categoría de dificultad competitiva. No se suavizan ni se modelizan los datos; cada celda resume la media y, cuando es posible, la desviación estándar dentro de cada nivel.")
         add_table_resumen_vertical(doc, tabla_dificultad, tr("Dificultad competitiva", idioma), idioma=idioma)
 
     if tabla_criticos is not None and not tabla_criticos.empty:
-        heading("DiscusiÃ³n especÃ­fica de partidos crÃ­ticos" if idioma != "ingles" else "Specific discussion of critical matches")
-        doc.add_paragraph("Esta tabla identifica, para cada variable, el partido que representa la situaciÃ³n mÃ¡s comprometida segÃºn el criterio conceptual de interpretaciÃ³n de cada indicador.")
+        heading("Discusión específica de partidos críticos" if idioma != "ingles" else "Specific discussion of critical matches")
+        doc.add_paragraph("Esta tabla identifica, para cada variable, el partido que representa la situación más comprometida según el criterio conceptual de interpretación de cada indicador.")
         add_table_df(doc, tabla_criticos, idioma=idioma)
 
     if figuras:
-        heading("Figuras resumen e interpretaciÃ³n analÃ­tica" if idioma != "ingles" else "Summary figures and analytical interpretation")
+        heading("Figuras resumen e interpretación analítica" if idioma != "ingles" else "Summary figures and analytical interpretation")
         for fig in figuras:
             p = doc.add_paragraph()
             r = p.add_run(fig["titulo"])
@@ -1776,8 +1809,8 @@ def crear_informe(ruta_plantilla, ruta_salida, datos_arbitro, ruta_foto, filtros
             if inter:
                 doc.add_paragraph(f"{TEXTOS[idioma]['interpretacion']}: " + inter)
 
-    heading("DiscusiÃ³n integrada" if idioma != "ingles" else "Integrated discussion")
-    doc.add_paragraph(discusion_integrada or interpretacion or "No se pudo generar una discusiÃ³n integrada por ausencia de datos suficientes.")
+    heading("Discusión integrada" if idioma != "ingles" else "Integrated discussion")
+    doc.add_paragraph(discusion_integrada or interpretacion or "No se pudo generar una discusión integrada por ausencia de datos suficientes.")
 
     insertar_tabla_siglas_y_referencias(doc, idioma=idioma)
     doc.save(str(ruta_salida))
@@ -1788,6 +1821,7 @@ def crear_informe(ruta_plantilla, ruta_salida, datos_arbitro, ruta_foto, filtros
 
 def main():
     modo = seleccionar_modo_ejecucion()
+    seleccionar_nivel_salida()
     print("="*80)
     print("SCRIPT DE INFORME AUTOMÃTICO PARA ÃRBITRO DE RUGBY 7")
     print("V30 - FOTO ROBUSTA + EPÃGRAFES SECUENCIALES + HEATMAP + DISCUSIÃ“N INTEGRADA")
@@ -1804,7 +1838,7 @@ def main():
     df = convertir_variables(df, variables_base)
     df, variables = preparar_variables_pre_post(df, variables_base)
 
-    df_info = leer_hoja_opcional(ruta_excel, ["REFEREES", "referees", "arbitros", "Ã¡rbitros", "datos_arbitros"])
+    df_info = leer_hoja_opcional(ruta_excel, ["REFEREES", "referees", "arbitros", "árbitros", "datos_arbitros"])
     if df_info is None and ruta_info:
         df_info = leer_excel(ruta_info)
 
@@ -1851,12 +1885,12 @@ def main():
         fila = buscar_fila_arbitro(df_info, arbitro) if df_info is not None else None
         datos_arbitro = fila_a_diccionario(fila)
         foto = buscar_foto(datos, arbitro, datos_arbitro)
-        print("Datos Ã¡rbitro:", "encontrados" if datos_arbitro else "no encontrados")
+        print("Datos árbitro:", "encontrados" if datos_arbitro else "no encontrados")
         print("Foto:", foto.name if foto else "no encontrada")
 
         resumenes = {}
         if cols.get("competitiva"):
-            resumenes["Resumen por categorÃ­a competitiva"] = resumen_por_grupo(df_a, cols["competitiva"], variables_analisis, "CategorÃ­a competitiva")
+            resumenes["Resumen por categoría competitiva"] = resumen_por_grupo(df_a, cols["competitiva"], variables_analisis, "Categoría competitiva")
 
         resumen_global_es = tabla_resumen_global(df_a, cols["partido"], variables_analisis, cols.get("competitiva"), idioma="castellano")
         tabla_dificultad_es = tabla_comparativa_dificultad(df_a, cols.get("competitiva"), variables_analisis, idioma="castellano")
@@ -1884,8 +1918,8 @@ def main():
             figs_id.mkdir(exist_ok=True)
             figuras_locales = []
 
-            # Figuras analÃ­ticas por partido solo para variables clave, evitando repeticiÃ³n excesiva.
-            claves_preferentes = ["IGFA ponderado POST", "IGFA simple POST", "RPE POST", "Molestias (MS) POST", "Capacidad fÃ­sica (PF) POST", "Capacidad mental (MF) POST", "Confianza (RC) POST", "Î”IGFA ponderado", "Î”IGFA simple", "Î”RPE", "Î”MS", "Î”PF", "Î”MF", "Î”RC"]
+            # Figuras analíticas por partido solo para variables clave, evitando repetición excesiva.
+            claves_preferentes = ["IGFA ponderado POST", "IGFA simple POST", "RPE POST", "Molestias (MS) POST", "Capacidad física (PF) POST", "Capacidad mental (MF) POST", "Confianza (RC) POST", "ΔIGFA ponderado", "ΔIGFA simple", "ΔRPE", "ΔMS", "ΔPF", "ΔMF", "ΔRC"]
             etiquetas_a_graficar = [e for e in claves_preferentes if e in variables_analisis]
             if not etiquetas_a_graficar:
                 etiquetas_a_graficar = list(variables_analisis.keys())[:8]
@@ -1902,23 +1936,23 @@ def main():
                             "interpretacion": interpretar_partido(etiqueta, stats, idioma=idioma_actual)
                         })
 
-            if "competitiva" in tipos and "Resumen por categorÃ­a competitiva" in resumenes:
+            if "competitiva" in tipos and "Resumen por categoría competitiva" in resumenes:
                 for etiqueta in etiquetas_a_graficar[:8]:
                     titulo = f"{etiqueta_idioma(etiqueta, idioma_actual)} {TEXTOS[idioma_actual]['por_competitiva']}"
                     ruta_png = figs_id / f"{nombre_seguro(etiqueta)}_por_categoria_competitiva_{idioma_actual}.png"
-                    stats = grafico_variable_por_grupo(resumenes["Resumen por categorÃ­a competitiva"], "CategorÃ­a competitiva", etiqueta, ruta_png, titulo, idioma=idioma_actual)
+                    stats = grafico_variable_por_grupo(resumenes["Resumen por categoría competitiva"], "Categoría competitiva", etiqueta, ruta_png, titulo, idioma=idioma_actual)
                     if stats:
                         figuras_locales.append({
                             "titulo": titulo,
                             "ruta": str(ruta_png),
-                            "interpretacion": interpretar_grupo(etiqueta, stats, "por categorÃ­a competitiva", idioma=idioma_actual)
+                            "interpretacion": interpretar_grupo(etiqueta, stats, "por categoría competitiva", idioma=idioma_actual)
                         })
 
             ruta_heatmap = figs_id / f"heatmap_partido_variables_{idioma_actual}.png"
             stats_hm = grafico_heatmap_partido_variables(df_a, cols["partido"], variables_analisis, ruta_heatmap, idioma=idioma_actual)
             if stats_hm:
                 figuras_locales.append({
-                    "titulo": "Heatmap Partido Ã— Variables" if idioma_actual != "ingles" else "Match Ã— Variables heatmap",
+                    "titulo": "Heatmap Partido × Variables" if idioma_actual != "ingles" else "Match × Variables heatmap",
                     "ruta": str(ruta_heatmap),
                     "interpretacion": "El mapa de calor resume la carga relativa por partido y variable. En las variables positivas se invierte la escala para que los tonos de mayor carga representen situaciones relativamente menos favorables."
                 })
@@ -1926,8 +1960,8 @@ def main():
 
         filtros = {
             "Partidos": seleccion_partidos if seleccion_partidos else ["Todos"],
-            "CategorÃ­a competitiva": seleccion_comp if seleccion_comp else ["Todas/no aplica"],
-            "Tipo de anÃ¡lisis": sorted(list(tipos)),
+            "Categoría competitiva": seleccion_comp if seleccion_comp else ["Todas/no aplica"],
+            "Tipo de análisis": sorted(list(tipos)),
             "Ãndices incluidos": sorted(list(indices_variables.keys())) if indices_variables else ["No incluidos"],
             "Excel": ruta_excel.name,
             "Plantilla": ruta_plantilla.name,
@@ -1966,7 +2000,7 @@ def main():
                         docx2pdf_convert(str(ruta_docx), str(ruta_pdf))
                         print(f"Informe PDF generado: {ruta_pdf}")
                     except Exception as e:
-                        print(f"No se pudo generar PDF automÃ¡ticamente: {e}")
+                        print(f"No se pudo generar PDF automáticamente: {e}")
                 else:
                     print("PDF no disponible. Instala con: pip install docx2pdf")
             if formatos == ["pdf"] and ruta_docx.exists():
@@ -1981,5 +2015,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 
 

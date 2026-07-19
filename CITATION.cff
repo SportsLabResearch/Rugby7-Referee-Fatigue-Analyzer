@@ -1,0 +1,26 @@
+﻿cff-version: 1.2.0
+title: Rugby7-Referee-Fatigue-Analyzer
+message: "If you use this software, please cite it."
+type: software
+
+authors:
+  - family-names: Pino Ortega
+    given-names: José
+
+license: MIT
+
+repository-code: https://github.com/SportsLabResearch/Rugby7-Referee-Fatigue-Analyzer
+
+keywords:
+  - rugby sevens
+  - referee
+  - fatigue
+  - monitoring
+  - sports science
+  - questionnaire
+  - performance analysis
+
+abstract: >
+  Scientific software for analysing subjective fatigue, readiness and
+  competitive demands in Rugby Sevens referees, including automated
+  scientific report generation.

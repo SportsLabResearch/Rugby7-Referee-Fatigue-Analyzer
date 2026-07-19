@@ -19,16 +19,13 @@ arbitros_originales = (
     .dropna()
     .astype(str)
     .drop_duplicates()
-    .head(3)
+    .head(9)
     .tolist()
 )
 
-principal = (
-    principal[principal["ref_id"].astype(str).isin(arbitros_originales)]
-    .groupby("ref_id", group_keys=False)
-    .head(4)
-    .copy()
-)
+principal = principal[
+    principal["ref_id"].astype(str).isin(arbitros_originales)
+].copy()
 
 partidos_originales = (
     principal["match_id"]
@@ -165,3 +162,4 @@ with pd.ExcelWriter(SALIDA, engine="openpyxl") as writer:
 print(f"Archivo anonimizado creado: {SALIDA.resolve()}")
 print(f"Árbitros ficticios: {len(referees)}")
 print(f"Partidos ficticios: {len(partidos_originales)}")
+
