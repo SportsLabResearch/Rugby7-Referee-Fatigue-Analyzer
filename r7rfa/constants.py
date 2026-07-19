@@ -1,0 +1,108 @@
+"""Constants and interface text used by the application."""
+
+from docx.shared import RGBColor
+
+VARIABLES_OBJETIVO = {
+    "RPE": ["rpe", "percepcion", "percepción", "rendimiento", "esfuerzo"],
+    "Molestias (MS)": ["molestia", "molestias", "ms"],
+    "Capacidad física (PF)": ["capacidad fisica", "capacidad física", "pf"],
+    "Capacidad mental (MF)": ["capacidad mental", "mf"],
+    "Confianza (RC)": ["confianza", "rc"],
+}
+
+VALORES_COMPETITIVOS = ["Desequilibrado", "Moderadamente equilibrado", "Muy equilibrado"]
+
+EXTENSIONES_IMAGEN = [".jpg", ".jpeg", ".png", ".bmp", ".webp"]
+
+COLOR_TITULO = RGBColor(31, 78, 121)
+
+TEXTOS = {
+    "castellano": {
+        "sin_datos": "Sin datos.",
+        "informe": "Informe de análisis",
+        "observaciones": "Observaciones analizadas",
+        "tipo_analisis_incluido": "Tipo de análisis incluido",
+        "indices_incluidos": "Ãndices de fatiga incluidos",
+        "filtros": "Filtros aplicados",
+        "partidos": "Análisis por partidos",
+        "partidos_intro": "Este análisis presenta valores directos de cada partido. No se calculan desviaciones estándar por partido porque cada partido tiene un único registro.",
+        "genero": "Análisis por género",
+        "competitiva": "Análisis por categoría competitiva",
+        "graficos": "Gráficos e interpretación",
+        "interpretacion": "Interpretación",
+        "conclusion": "Conclusión",
+        "conclusion_partidos": "El análisis por partidos permite revisar la evolución real del árbitro partido a partido. Cada gráfico representa una variable concreta en todos los partidos seleccionados.",
+        "conclusion_genero": "El análisis por género resume las diferencias agrupadas por M/W cuando existen datos suficientes.",
+        "conclusion_competitiva": "El análisis por categoría competitiva resume la respuesta del árbitro según el equilibrio del partido.",
+        "variables": "Descripción de variables analizadas",
+        "variables_intro": "La siguiente tabla resume las siglas empleadas en el informe, su significado y una interpretación breve apoyada en literatura científica sobre monitorización subjetiva, carga interna y rendimiento.",
+        "referencias": "Referencias científicas",
+        "puntuacion_directa": "Puntuación directa (0-10)",
+        "media_010": "Media (0-10)",
+        "por_partido": "por partido",
+        "por_partidos": "por partidos",
+        "por_genero": "por género",
+        "por_competitiva": "por categoría competitiva",
+    },
+    "ingles": {
+        "sin_datos": "No data.",
+        "informe": "Analysis report",
+        "observaciones": "Analysed observations",
+        "tipo_analisis_incluido": "Type of analysis included",
+        "indices_incluidos": "Fatigue indices included",
+        "filtros": "Applied filters",
+        "partidos": "Match-by-match analysis",
+        "partidos_intro": "This analysis presents the direct values recorded for each match. Standard deviations are not calculated per match because each match has a single record.",
+        "genero": "Sex-based analysis",
+        "competitiva": "Competitive balance category analysis",
+        "graficos": "Graphs and interpretation",
+        "interpretacion": "Interpretation",
+        "conclusion": "Conclusion",
+        "conclusion_partidos": "The match-by-match analysis makes it possible to review the referee's actual evolution across the selected matches. Each graph represents one specific variable across all selected matches.",
+        "conclusion_genero": "The sex-based analysis summarises grouped differences by M/W when sufficient data are available.",
+        "conclusion_competitiva": "The competitive balance category analysis summarises the referee's response according to match balance.",
+        "variables": "Description of the analysed variables",
+        "variables_intro": "The following table summarises the abbreviations used in the report, their meaning and a brief interpretation supported by scientific literature on subjective monitoring, internal load and performance.",
+        "referencias": "Scientific references",
+        "puntuacion_directa": "Direct score (0-10)",
+        "media_010": "Mean (0-10)",
+        "por_partido": "by match",
+        "por_partidos": "by match",
+        "por_genero": "by sex",
+        "por_competitiva": "by competitive balance category",
+    },
+}
+
+TRAD_EN = {
+    "RPE": "RPE",
+    "Molestias (MS)": "Muscle soreness (MS)",
+    "Capacidad física (PF)": "Physical fitness (PF)",
+    "Capacidad mental (MF)": "Mental fitness (MF)",
+    "Confianza (RC)": "Referee confidence (RC)",
+    "IGFA simple": "Simple GRFI",
+    "IGFA ponderado": "Weighted GRFI",
+    "Clasificación IGFA simple": "Simple GRFI classification",
+    "Clasificación IGFA ponderado": "Weighted GRFI classification",
+    "Partido": "Match",
+    "Género": "Sex",
+    "Categoría competitiva": "Competitive balance category",
+    "Resumen por género": "Summary by sex",
+    "Resumen por categoría competitiva": "Summary by competitive balance category",
+    "Fatiga muy baja": "Very low fatigue",
+    "Fatiga baja": "Low fatigue",
+    "Fatiga moderada": "Moderate fatigue",
+    "Fatiga alta": "High fatigue",
+    "Fatiga muy alta": "Very high fatigue",
+    "Sin dato": "No data",
+    "No incluidos": "Not included",
+    "No aplicable": "Not applicable",
+    "Todas/no aplica": "All/not applicable",
+    "Todos": "All",
+    "Todas": "All",
+    "Tipo de análisis": "Type of analysis",
+    "Ãndices incluidos": "Included indices",
+    "Plantilla": "Template",
+    "partidos": "matches",
+    "genero": "sex",
+    "competitiva": "competitive balance",
+}
