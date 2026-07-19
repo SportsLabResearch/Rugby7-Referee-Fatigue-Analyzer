@@ -19,3 +19,51 @@ templates/*
 Datos/*
 !Datos/README.md
 !Datos/.gitkeep
+
+# Private research data
+Datos/*
+!Datos/README.md
+!Datos/.gitkeep
+
+# Private generated reports
+Resultados/
+outputs/*
+!outputs/.gitkeep
+
+# Personal images and documents
+*.jpg
+*.jpeg
+*.png
+*.docx
+*.pdf
+*.xlsx
+*.xls
+*.xlsm
+
+# Allow public anonymized examples
+!examples/anonymized_data/
+!examples/anonymized_data/**
+
+# Private research data
+Datos/*
+!Datos/README.md
+!Datos/.gitkeep
+
+# Private generated reports
+Resultados/
+outputs/*
+!outputs/.gitkeep
+
+# Personal images and documents
+*.jpg
+*.jpeg
+*.png
+*.docx
+*.pdf
+*.xlsx
+*.xls
+*.xlsm
+
+# Allow public anonymized examples
+!examples/anonymized_data/
+!examples/anonymized_data/**
