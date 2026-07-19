@@ -815,30 +815,6 @@ def ruta_foto_desde_datos(datos_dir, datos_arbitro):
     return None
 
 
-def buscar_foto(datos_dir, arbitro, datos_arbitro):
-    p = ruta_foto_desde_datos(datos_dir, datos_arbitro)
-    if p:
-        return p
-
-    objetivo = normalizar_simple(arbitro)
-    imgs = []
-    for ext in EXTENSIONES_IMAGEN:
-        imgs.extend(datos_dir.rglob(f"*{ext}"))
-
-    for img in imgs:
-        if normalizar_simple(img.stem) == objetivo:
-            return img
-    for img in imgs:
-        stem = normalizar_simple(img.stem)
-        if objetivo in stem or stem in objetivo:
-            return img
-
-    partes = [normalizar_simple(p) for p in re.split(r"\s+|_|-", arbitro) if len(p) >= 3]
-    for img in imgs:
-        stem = normalizar_simple(img.stem)
-        if partes and all(p in stem for p in partes[:2]):
-            return img
-    return None
 
 
 # =============================================================================
@@ -1078,20 +1054,6 @@ def grafico_variable_por_grupo(resumen, columna_grupo, etiqueta, ruta, titulo, i
 
 
 
-def sentido_variable(etiqueta):
-    e = normalizar(etiqueta)
-    peor_alto = ["rpe", "molestias", "ms", "soreness", "igfa", "grfi"]
-    mejor_alto = ["capacidad_fisica", "pf", "capacidad_mental", "mf", "confianza", "rc"]
-    if any(k in e for k in peor_alto):
-        return "peor_alto"
-    if any(k in e for k in mejor_alto):
-        return "mejor_alto"
-    if e.startswith("delta") or e.startswith("d") or "delta" in e:
-        if any(k in e for k in ["rpe", "ms", "igfa", "grfi"]):
-            return "delta_peor_alto"
-        if any(k in e for k in ["pf", "mf", "rc"]):
-            return "delta_mejor_alto"
-    return "neutro"
 
 
 def lectura_tendencia(etiqueta, tendencia, idioma="castellano"):
@@ -1367,69 +1329,6 @@ def insertar_tabla_siglas_y_referencias(doc, idioma="castellano"):
         for run in p.runs:
             run.font.size = Pt(8)
 
-def rellenar_tabla_datos_y_foto(doc, datos_arbitro, ruta_foto):
-    """
-    Busca la tabla de la plantilla que contiene Variable / Valor / Foto.
-    Rellena la columna Valor y sustituye la celda Foto por la imagen.
-    """
-    tabla_obj = None
-    for table in doc.tables:
-        textos = " ".join(cell.text for row in table.rows for cell in row.cells)
-        nt = normalizar_simple(textos)
-        if "variable" in nt and "valor" in nt and "foto" in nt:
-            tabla_obj = table
-            break
-
-    if tabla_obj is None:
-        print("AVISO: no se encontró la tabla Variable/Valor/Foto en la plantilla.")
-        return False
-
-    foto_insertada = False
-
-    # Rellenar columna Valor: normalmente columna 0 = Variable, columna 1 = Valor.
-    for row in tabla_obj.rows:
-        if len(row.cells) < 2:
-            continue
-        etiqueta = limpiar_texto(row.cells[0].text)
-        if normalizar_simple(etiqueta) in ["variable", ""]:
-            continue
-
-        valor = buscar_valor_datos(datos_arbitro, etiqueta)
-        if valor:
-            set_cell(row.cells[1], valor, bold=False, size=9)
-
-        # Celda foto: se detecta cualquier celda con texto Foto.
-        for cell in row.cells:
-            if normalizar_simple(cell.text) == "foto" and not foto_insertada:
-                cell.text = ""
-                p = cell.paragraphs[0]
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                if ruta_foto and Path(ruta_foto).exists():
-                    run = p.add_run()
-                    run.add_picture(str(ruta_foto), width=Inches(2.0))
-                    foto_insertada = True
-                else:
-                    p.add_run("Sin fotografía detectada.")
-
-    # Por si la celda foto está combinada y solo aparece una vez fuera del loop útil.
-    if not foto_insertada:
-        for row in tabla_obj.rows:
-            for cell in row.cells:
-                if "foto" in normalizar_simple(cell.text):
-                    cell.text = ""
-                    p = cell.paragraphs[0]
-                    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                    if ruta_foto and Path(ruta_foto).exists():
-                        run = p.add_run()
-                        run.add_picture(str(ruta_foto), width=Inches(2.0))
-                        foto_insertada = True
-                    else:
-                        p.add_run("Sin fotografía detectada.")
-                    break
-            if foto_insertada:
-                break
-
-    return True
 
 
 
