@@ -1,0 +1,21 @@
+﻿__pycache__/
+*.pyc
+.venv/
+venv/
+outputs/
+Resultados/
+data/*
+!data/.gitkeep
+templates/*
+!templates/.gitkeep
+~$*
+*.docx
+*.pdf
+*.xlsx
+*.xls
+*.xlsm
+
+# Private local data
+Datos/*
+!Datos/README.md
+!Datos/.gitkeep
