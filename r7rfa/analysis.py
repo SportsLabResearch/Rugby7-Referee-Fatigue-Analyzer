@@ -1,8 +1,5 @@
 """
-Core scientific analysis routines.
-
-The functions in this module calculate fatigue indices and produce
-descriptive summaries from referee observations.
+Core scientific analysis routines for Rugby7 Referee Fatigue Analyzer.
 """
 
 import numpy as np
